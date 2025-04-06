@@ -65,27 +65,5 @@
   </form>
 </body>
 </html>
-<?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $player_name = $_POST['player_name'];
-    $report_reason = $_POST['report_reason'];
 
-    $data = [
-        "content" => "🚨 Репорт отримано!\n**Гравець**: $player_name\n**Причина**: $report_reason"
-    ];
-
-    $webhook_url = 'https://discord.com/api/webhooks/1358422885299130491/-yEo2NzIUC-YBUhC2TnQifQoxhsy1e6g3-4dRAr5L4ukyAHYVlrCNqQbgJEP_OpJhgK4';
-
-    $options = [
-        "http" => [
-            "header" => "Content-Type: application/json",
-            "method" => "POST",
-            "content" => json_encode($data),
-        ]
-    ];
-
-    $context = stream_context_create($options);
-    file_get_contents($webhook_url, false, $context);
-}
-?>
 
