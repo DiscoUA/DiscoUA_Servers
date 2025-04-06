@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Репорти на CS2 сервері</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    form {
+      background-color: #333333;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 600px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #555;
+      background-color: #222;
+      color: white;
+    }
+    button {
+      background-color: #00aa00;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 5px;
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #008800;
+    }
+  </style>
+</head>
+<body>
+  <h1>Форма репорту</h1>
+  <form action="submit_report.php" method="POST">
+    <label for="player_name">Нік гравця:</label>
+    <input type="text" id="player_name" name="player_name" required>
+
+    <label for="report_reason">Причина репорту:</label>
+    <textarea id="report_reason" name="report_reason" rows="5" required></textarea>
+
+    <label for="evidence">Докази (скріншоти, відео, тощо):</label>
+    <input type="file" id="evidence" name="evidence">
+
+    <button type="submit">Відправити репорт</button>
+  </form>
+</body>
+</html>
