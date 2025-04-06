@@ -3,48 +3,188 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CS2 Сервер</title>
+  <title>CS2 Сервер - Репорти</title>
   <style>
     body {
-      background-color: #121212;
+      background-color: #1f1f1f;
       color: #ffffff;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
+      padding: 20px;
     }
+
     h1 {
+      color: #00aa00;
+      margin-bottom: 30px;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 5px rgba(0, 170, 0, 0.8);
+    }
+
+    h2 {
+      color: #00aa00;
       margin-bottom: 20px;
     }
-    a.connect-button {
-      display: inline-block;
+
+    form {
+      background-color: #333;
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #555;
+      background-color: #222;
+      color: #ffffff;
+      font-size: 1rem;
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button {
       background-color: #00aa00;
       color: white;
-      padding: 12px 24px;
-      text-decoration: none;
+      padding: 14px 28px;
       border-radius: 8px;
       font-size: 18px;
-      transition: background 0.3s ease;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
     }
-    a.connect-button:hover {
+
+    button:hover {
       background-color: #008800;
     }
-    p.link-message {
-      margin-top: 30px;
-      font-size: 14px;
-      color: #bbbbbb;
+
+    .report-container {
+      width: 100%;
+      max-width: 800px;
+      margin-top: 50px;
     }
+
+    .report {
+      background-color: #444;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .report h3 {
+      color: #00aa00;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .report p {
+      color: #ffffff;
+      font-size: 1rem;
+    }
+
+    .report .timestamp {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-top: 10px;
+    }
+
+    .report .evidence {
+      color: #00aa00;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .btn-container {
+      margin-top: 40px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+
   </style>
 </head>
 <body>
-  <h1>Ласкаво просимо на наш CS2 сервер!</h1>
-  <a class="connect-button" href="steam://connect/123.456.78.90:27015">
-    Підключитися до сервера
-  </a>
-  <p class="link-message">Якщо посилання не працює, скопіюйте вручну: <br> steam://connect/123.456.78.90:27015</p>
+  <div class="container">
+    <h1>Репорти на CS2 сервері</h1>
+
+    <!-- Форма для додавання репорту -->
+    <form action="submit_report.php" method="POST" enctype="multipart/form-data">
+      <h2>Залишити репорт</h2>
+      <label for="player_name">Нік гравця:</label>
+      <input type="text" id="player_name" name="player_name" required>
+
+      <label for="report_reason">Причина репорту:</label>
+      <textarea id="report_reason" name="report_reason" rows="5" required></textarea>
+
+      <label for="evidence">Докази (скріншоти, відео, тощо):</label>
+      <input type="file" id="evidence" name="evidence">
+
+      <button type="submit">Відправити репорт</button>
+    </form>
+
+    <!-- Секція для перегляду репортів -->
+    <div class="report-container">
+      <h2>Останні репорти</h2>
+      <!-- Тут будуть виводитись репорти -->
+      <?php
+      // Підключення до бази даних
+      $servername = "localhost";
+      $username = "root";
+      $password = "";
+      $dbname = "your_database";
+
+      // Підключення до бази даних
+      $conn = new mysqli($servername, $username, $password, $dbname);
+
+      if ($conn->connect_error) {
+          die("Connection failed: " . $conn->connect_error);
+      }
+
+      // Отримуємо всі репорти
+      $sql = "SELECT id, player_name, report_reason, evidence, timestamp FROM reports ORDER BY timestamp DESC";
+      $result = $conn->query($sql);
+
+      if ($result->num_rows > 0) {
+          while($row = $result->fetch_assoc()) {
+              echo "<div class='report'>";
+              echo "<h3>" . htmlspecialchars($row['player_name']) . "</h3>";
+              echo "<p><strong>Причина:</strong> " . htmlspecialchars($row['report_reason']) . "</p>";
+              echo "<p><strong>Докази:</strong> " . (isset($row['evidence']) && !empty($row['evidence']) ? htmlspecialchars($row['evidence']) : "Немає доказів") . "</p>";
+              echo "<p class='timestamp'><strong>Дата:</strong> " . $row['timestamp'] . "</p>";
+              echo "</div>";
+          }
+      } else {
+          echo "<p>Немає репортів.</p>";
+      }
+
+      $conn->close();
+      ?>
+    </div>
+
+  </div>
+
 </body>
 </html>
-<a href="report.html" class="connect-button">Репорти</a>
